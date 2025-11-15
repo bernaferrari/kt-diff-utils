@@ -1,6 +1,7 @@
 package com.bernaferrari.difflib.text
 
-import java.lang.Character
+import kotlin.text.isHighSurrogate
+import kotlin.text.isLowSurrogate
 
 internal object StringUtils {
 
@@ -23,7 +24,7 @@ internal object StringUtils {
         var count = 0
         while (length > widthIndex) {
             var breakPoint = widthIndex + delimiter * count
-            if (Character.isHighSurrogate(builder[breakPoint - 1]) && Character.isLowSurrogate(builder[breakPoint])) {
+            if (builder[breakPoint - 1].isHighSurrogate() && builder[breakPoint].isLowSurrogate()) {
                 breakPoint += 1
                 if (breakPoint == builder.length) {
                     breakPoint -= 2

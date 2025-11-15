@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.25" apply false
+    kotlin("multiplatform") version "1.9.25" apply false
     id("org.jetbrains.dokka") version "1.9.20" apply false
     id("com.diffplug.spotless") version "6.25.0"
 }
@@ -24,8 +26,6 @@ spotless {
 }
 
 subprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-
     pluginManager.withPlugin("java") {
         configure<JavaPluginExtension> {
             sourceCompatibility = JavaVersion.VERSION_1_8
@@ -38,17 +38,12 @@ subprojects {
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            jvmTarget = "1.8"
             freeCompilerArgs = freeCompilerArgs + "-Xjsr305=strict"
         }
+        (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "1.8"
     }
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
-    }
-
-    dependencies {
-        add("testImplementation", "org.junit.jupiter:junit-jupiter:5.11.4")
-        add("testImplementation", "org.assertj:assertj-core:3.27.3")
     }
 }

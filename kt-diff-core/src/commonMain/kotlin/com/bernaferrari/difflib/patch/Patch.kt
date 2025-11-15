@@ -1,15 +1,15 @@
 package com.bernaferrari.difflib.patch
 
 import com.bernaferrari.difflib.algorithm.Change
-import java.io.Serializable
-import java.util.ArrayList
+import com.bernaferrari.difflib.platform.PlatformSerializable
 
 /**
  * Describes the patch holding all deltas between the original and revised texts.
  */
-class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Serializable {
+class Patch<T> @JvmOverloads constructor(@Suppress("UNUSED_PARAMETER") estimatedPatchSize: Int = 10) :
+    PlatformSerializable {
 
-    private val deltaList: MutableList<AbstractDelta<T>> = ArrayList(estimatedPatchSize)
+    private val deltaList: MutableList<AbstractDelta<T>> = mutableListOf()
     private var deltasSorted: Boolean = true
     private val conflictProducesException: ConflictOutput<T> =
         ConflictOutput { verifyChunk, _, _ ->
@@ -19,7 +19,7 @@ class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Seriali
 
     @Throws(PatchFailedException::class)
     fun applyTo(target: List<T>): List<T> {
-        val result = ArrayList(target)
+        val result = target.toMutableList()
         applyToExisting(result)
         return result
     }
@@ -38,7 +38,7 @@ class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Seriali
 
     @Throws(PatchFailedException::class)
     fun applyFuzzy(target: List<T>, maxFuzz: Int): List<T> {
-        val ctx = PatchApplyingContext(ArrayList(target), maxFuzz)
+        val ctx = PatchApplyingContext(target.toMutableList(), maxFuzz)
         var lastPatchDelta = 0
 
         for (delta in deltas) {
@@ -134,7 +134,7 @@ class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Seriali
     }
 
     fun restore(target: List<T>): List<T> {
-        val result = ArrayList(target)
+        val result = target.toMutableList()
         restoreToExisting(result)
         return result
     }
@@ -179,7 +179,7 @@ class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Seriali
         @JvmStatic
         val CONFLICT_PRODUCES_MERGE_CONFLICT: ConflictOutput<String> = ConflictOutput { _, delta, result ->
             if (result.size > delta.source.position) {
-                val orgData = ArrayList<String>()
+                val orgData = mutableListOf<String>()
                 repeat(delta.source.size()) {
                     orgData.add(result[delta.source.position])
                     result.removeAt(delta.source.position)
@@ -199,7 +199,7 @@ class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Seriali
             generate(original, revised, changes, false)
 
         private fun <T> buildChunk(start: Int, end: Int, data: List<T>): Chunk<T> =
-            Chunk(start, ArrayList(data.subList(start, end)))
+            Chunk(start, data.subList(start, end).toList())
 
         @JvmStatic
         fun <T> generate(
@@ -212,7 +212,7 @@ class Patch<T> @JvmOverloads constructor(estimatedPatchSize: Int = 10) : Seriali
             var startOriginal = 0
             var startRevised = 0
             val changes = if (includeEquals) {
-                ArrayList(changesInput).also { list ->
+                changesInput.toMutableList().also { list ->
                     list.sortBy { it.startOriginal }
                 }
             } else {

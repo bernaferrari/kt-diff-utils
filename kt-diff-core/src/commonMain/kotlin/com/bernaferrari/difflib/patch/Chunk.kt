@@ -1,9 +1,6 @@
 package com.bernaferrari.difflib.patch
 
-import java.io.Serializable
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Objects
+import com.bernaferrari.difflib.platform.PlatformSerializable
 
 /**
  * Holds the information about the part of text involved in the diff process.
@@ -12,17 +9,17 @@ class Chunk<T>(
     val position: Int,
     lines: List<T>,
     changePosition: List<Int>? = null
-) : Serializable {
+) : PlatformSerializable {
 
-    var lines: List<T> = ArrayList(lines)
+    var lines: List<T> = lines.toList()
         set(value) {
-            field = ArrayList(value)
+            field = value.toList()
         }
 
-    val changePosition: List<Int>? = changePosition?.let { ArrayList(it) }
+    val changePosition: List<Int>? = changePosition?.toList()
 
     constructor(position: Int, lines: Array<T>, changePosition: List<Int>? = null) :
-        this(position, Arrays.asList(*lines), changePosition)
+        this(position, lines.toList(), changePosition)
 
     fun verifyChunk(target: List<T>): VerifyChunk = verifyChunk(target, 0, position)
 
@@ -46,7 +43,7 @@ class Chunk<T>(
 
     fun last(): Int = position + size() - 1
 
-    override fun hashCode(): Int = Objects.hash(lines, position, size())
+    override fun hashCode(): Int = 31 * lines.hashCode() + position
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

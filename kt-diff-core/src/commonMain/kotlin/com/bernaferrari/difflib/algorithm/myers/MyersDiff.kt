@@ -6,10 +6,8 @@ import com.bernaferrari.difflib.algorithm.DiffAlgorithmI
 import com.bernaferrari.difflib.algorithm.DiffAlgorithmListener
 import com.bernaferrari.difflib.algorithm.Equalizer
 import com.bernaferrari.difflib.patch.DeltaType
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.Objects
-import java.util.RandomAccess
+import kotlin.collections.HashMap
+import kotlin.collections.RandomAccess
 
 /**
  * A clean-room implementation of Eugene Myers greedy differencing algorithm.
@@ -115,7 +113,7 @@ class MyersDiff<T> @JvmOverloads constructor(
 
     private fun buildRevision(actualPath: PathNode, orig: List<T>, rev: List<T>): List<Change> {
         var path: PathNode? = actualPath
-        val changes = ArrayList<Change>()
+        val changes = mutableListOf<Change>()
         if (path?.isSnake() == true) {
             path = path.prev
         }
@@ -169,7 +167,7 @@ class MyersDiff<T> @JvmOverloads constructor(
     )
 
     private fun <T> ensureRandomAccess(list: List<T>): List<T> =
-        if (list is RandomAccess) list else ArrayList(list)
+        if (list is RandomAccess) list else list.toMutableList()
 
     private fun applyOffset(
         changes: List<Change>,
@@ -195,7 +193,7 @@ class MyersDiff<T> @JvmOverloads constructor(
         target: List<T>,
         anchors: List<Anchor>
     ): List<Change> {
-        val result = ArrayList<Change>()
+        val result = mutableListOf<Change>()
         var sourceStart = 0
         var targetStart = 0
         for (anchor in anchors) {
@@ -247,7 +245,7 @@ class MyersDiff<T> @JvmOverloads constructor(
                 uniqueSourcePositions[value] = index
             }
         }
-        val candidates = ArrayList<Anchor>()
+        val candidates = mutableListOf<Anchor>()
         target.forEachIndexed { index, value ->
             if (sourceCounts[value] == 1 && targetCounts[value] == 1) {
                 val sourceIndex = uniqueSourcePositions[value]
@@ -293,7 +291,7 @@ class MyersDiff<T> @JvmOverloads constructor(
             return emptyList()
         }
         var idx = tails[length - 1]
-        val result = ArrayList<Anchor>(length)
+        val result = mutableListOf<Anchor>()
         while (idx >= 0) {
             result.add(candidates[idx])
             idx = predecessors[idx]
@@ -327,7 +325,7 @@ class MyersDiff<T> @JvmOverloads constructor(
     private data class Anchor(val sourceIndex: Int, val targetIndex: Int)
 
     companion object {
-        private val DEFAULT_EQUALIZER: Equalizer<Any?> = { a, b -> Objects.equals(a, b) }
+        private val DEFAULT_EQUALIZER: Equalizer<Any?> = { a, b -> a == b }
 
         fun factory(): DiffAlgorithmFactory = object : DiffAlgorithmFactory {
             override fun <T> create(): DiffAlgorithmI<T> = MyersDiff()

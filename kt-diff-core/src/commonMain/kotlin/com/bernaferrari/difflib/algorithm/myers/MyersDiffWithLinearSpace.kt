@@ -6,11 +6,9 @@ import com.bernaferrari.difflib.algorithm.DiffAlgorithmI
 import com.bernaferrari.difflib.algorithm.DiffAlgorithmListener
 import com.bernaferrari.difflib.algorithm.Equalizer
 import com.bernaferrari.difflib.patch.DeltaType
-import java.util.ArrayList
-import java.util.Objects
 
 class MyersDiffWithLinearSpace<T> @JvmOverloads constructor(
-    private val equalizer: Equalizer<T> = { a, b -> Objects.equals(a, b) }
+    private val equalizer: Equalizer<T> = { a, b -> a == b }
 ) : DiffAlgorithmI<T> {
 
     override fun computeDiff(
@@ -168,7 +166,7 @@ class MyersDiffWithLinearSpace<T> @JvmOverloads constructor(
         val size: Int = source.size + target.size + 2
         val vDown: IntArray = IntArray(size)
         val vUp: IntArray = IntArray(size)
-        val script: MutableList<Change> = ArrayList()
+        val script: MutableList<Change> = mutableListOf()
     }
 
     private data class Snake(val start: Int, val end: Int, val diag: Int)

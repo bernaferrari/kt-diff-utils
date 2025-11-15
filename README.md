@@ -4,7 +4,7 @@ Lightweight Kotlin diff utilities optimized for Android and Kotlin Multiplatform
 
 ## Highlights
 
-- **Kotlin-first**: idiomatic APIs, null-safety, and multiplatform-friendly collections. All blocking `java.io` usage is isolated to optional modules, so the core works directly in Android apps and Kotlin Multiplatform targets.
+- **Kotlin-first**: idiomatic APIs, null-safety, and multiplatform-friendly collections. All blocking `java.io` usage is isolated to optional modules, and the entire diff/patch implementation now lives in `commonMain`, so you can wire new Kotlin Multiplatform targets without touching the algorithms.
 - **Performance obsessed**: profiled and benchmarked; shared-prefix trimming, patience-style anchors, and cached delta ordering keep costs proportional to real edits.
 - **Modular**: pick the pieces you need.
   - `kt-diff-core`: Myers diff, patch apply/restore, diff-row generation – 100% Kotlin.
@@ -47,7 +47,7 @@ If you already depend on one of those ports, swapping to KT Diff Utils should on
 
 There’s no published artifact yet—grab the source from GitHub (fork or clone) and include it directly:
 
-1. Keep this repo next to your app/library and wire it via a composite build:
+1. Keep this repo next to your app/library and wire it via a composite build (adjust the path if your folder layout differs):
 
    ```kotlin
    // settings.gradle.kts of your consumer project
@@ -88,7 +88,7 @@ Unified diff parsing/writing lives in `kt-diff-jvm-io` (`UnifiedDiffReader`, `Un
 
 ## Multiplatform status
 
-- `kt-diff-core` is free of `java.io` and ready for Android / Kotlin Multiplatform (JVM target today).
+- `kt-diff-core` is published as a Kotlin Multiplatform module (`commonMain` + `jvmMain`). Only the JVM target is enabled today, but every algorithm already sits in common code, so adding JS/Native/Wasm targets is mostly a Gradle switch away.
 - `kt-diff-jvm-io` intentionally uses `BufferedReader`, `InputStream`, and `Writer` for GNU diff compatibility.
 
 ## Contributing

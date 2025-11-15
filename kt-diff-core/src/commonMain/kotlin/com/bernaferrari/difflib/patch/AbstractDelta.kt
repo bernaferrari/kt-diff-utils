@@ -1,7 +1,6 @@
 package com.bernaferrari.difflib.patch
 
-import java.io.Serializable
-import java.util.Objects
+import com.bernaferrari.difflib.platform.PlatformSerializable
 
 /**
  * Abstract delta between a source and a target.
@@ -10,7 +9,7 @@ abstract class AbstractDelta<T>(
     val type: DeltaType,
     val source: Chunk<T>,
     val target: Chunk<T>
-) : Serializable {
+) : PlatformSerializable {
 
     protected open fun verifyChunkToFitTarget(target: List<T>): VerifyChunk = source.verifyChunk(target)
 
@@ -34,7 +33,7 @@ abstract class AbstractDelta<T>(
 
     abstract fun withChunks(original: Chunk<T>, revised: Chunk<T>): AbstractDelta<T>
 
-    override fun hashCode(): Int = Objects.hash(source, target, type)
+    override fun hashCode(): Int = 31 * (31 * source.hashCode() + target.hashCode()) + type.hashCode()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

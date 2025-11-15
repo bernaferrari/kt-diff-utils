@@ -7,7 +7,6 @@ import com.bernaferrari.difflib.text.DiffRow.Tag
 import com.bernaferrari.difflib.text.deltamerge.DeltaMergeUtils
 import com.bernaferrari.difflib.text.deltamerge.InlineDeltaMergeInfo
 import java.nio.file.Files
-import java.util.regex.Pattern
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -90,7 +89,7 @@ class DiffRowGeneratorTest {
 
     @Test
     fun splitStringPreserveDelimiter() {
-        val list = DiffRowGenerator.splitStringPreserveDelimiter("test,test2", DiffRowGenerator.SPLIT_BY_WORD_PATTERN)
+        val list = DiffRowGenerator.splitStringPreserveDelimiter("test,test2", DiffRowGenerator.SPLIT_BY_WORD_REGEX)
         assertEquals(listOf("test", ",", "test2"), list)
     }
 
@@ -127,7 +126,7 @@ class DiffRowGeneratorTest {
             .showInlineDiffs(true)
             .mergeOriginalRevised(true)
             .inlineDiffBySplitter { line ->
-                DiffRowGenerator.splitStringPreserveDelimiter(line, Pattern.compile(","))
+                DiffRowGenerator.splitStringPreserveDelimiter(line, Regex(","))
             }
             .oldTag { _: Boolean -> "~" }
             .newTag { _: Boolean -> "**" }
@@ -247,7 +246,7 @@ class DiffRowGeneratorTest {
             listOf("a ", "b"),
             listOf("a", "b")
         )
-        val merged = DiffRowGenerator.WHITESPACE_EQUALITIES_MERGER.apply(
+        val merged = DiffRowGenerator.WHITESPACE_EQUALITIES_MERGER(
             InlineDeltaMergeInfo(patch.deltas, listOf("a "), listOf("a"))
         )
         assertEquals(1, merged.size)
