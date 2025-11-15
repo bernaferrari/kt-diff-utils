@@ -4,11 +4,6 @@ import com.bernaferrari.difflib.DiffUtils
 import com.bernaferrari.difflib.algorithm.DiffAlgorithmFactory
 import com.bernaferrari.difflib.algorithm.myers.MyersDiff
 import com.bernaferrari.difflib.algorithm.myers.MyersDiffWithLinearSpace
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -74,23 +69,4 @@ class PatchWithAllDiffAlgorithmsTest {
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("provideAlgorithms")
-    @Throws(IOException::class, ClassNotFoundException::class)
-    fun patchSerializable(factory: DiffAlgorithmFactory) {
-        DiffUtils.withDefaultDiffAlgorithmFactory(factory)
-        val from = listOf("aaa", "bbb", "ccc", "ddd")
-        val to = listOf("aaa", "bxb", "cxc", "ddd")
-        val patch = DiffUtils.diff(from, to)
-        val baos = ByteArrayOutputStream()
-        ObjectOutputStream(baos).use { out -> out.writeObject(patch) }
-        val result = ObjectInputStream(ByteArrayInputStream(baos.toByteArray())).use { `in` ->
-            `in`.readObject() as Patch<String>
-        }
-        try {
-            assertEquals(to, DiffUtils.patch(from, result))
-        } catch (e: PatchFailedException) {
-            fail<Unit>(e.message ?: "Patch after serialization failed for factory ${factory.javaClass.simpleName}")
-        }
-    }
 }

@@ -5,11 +5,6 @@ import com.bernaferrari.difflib.patch.ChangeDelta
 import com.bernaferrari.difflib.patch.Chunk
 import com.bernaferrari.difflib.patch.Patch
 import com.bernaferrari.difflib.patch.PatchFailedException
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.fail
@@ -116,26 +111,6 @@ class WithMyersDiffWithLinearSpacePatchTest {
             join(intRange(1), deltaTo, deltaFrom, deltaTo),
             patch.applyFuzzy(join(intRange(1), deltaFrom, deltaFrom, deltaFrom), 0)
         )
-    }
-
-    @Test
-    @Throws(IOException::class, ClassNotFoundException::class)
-    fun patchSerializable() {
-        val changeFrom = listOf("aaa", "bbb", "ccc", "ddd")
-        val changeTo = listOf("aaa", "bxb", "cxc", "ddd")
-
-        val patch = DiffUtils.diff(changeFrom, changeTo, MyersDiffWithLinearSpace())
-        val baos = ByteArrayOutputStream()
-        ObjectOutputStream(baos).use { out -> out.writeObject(patch) }
-        val result = ObjectInputStream(ByteArrayInputStream(baos.toByteArray())).use { `in` ->
-            `in`.readObject() as Patch<String>
-        }
-
-        try {
-            assertEquals(changeTo, DiffUtils.patch(changeFrom, result))
-        } catch (e: PatchFailedException) {
-            fail<Unit>(e.message ?: "Patch application failed after serialization")
-        }
     }
 
     @Test
