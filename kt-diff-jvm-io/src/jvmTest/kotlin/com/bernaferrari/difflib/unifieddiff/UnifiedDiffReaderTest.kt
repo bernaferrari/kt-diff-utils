@@ -231,11 +231,11 @@ class UnifiedDiffReaderTest {
             javaClass.getResourceAsStream("01-bazel-strip-unused.patch_issue107.diff")
         )
         assertThat(diff.getFiles().size).isEqualTo(450)
-        val file = diff.getFiles()[0]
-        assertThat(file.fromFile).isEqualTo("./src/main/java/com/amazonaws/AbortedException.java")
-        assertThat(file.toFile)
+        val firstFile = diff.getFiles()[0]
+        assertThat(firstFile.fromFile).isEqualTo("./src/main/java/com/amazonaws/AbortedException.java")
+        assertThat(firstFile.toFile)
             .isEqualTo("/home/greg/projects/bazel/third_party/aws-sdk-auth-lite/src/main/java/com/amazonaws/AbortedException.java")
-        assertThat(diff.getFiles().count { file -> file.noNewLineAtTheEndOfTheFile }).isEqualTo(48)
+        assertThat(diff.getFiles().count { entry -> entry.noNewLineAtTheEndOfTheFile }).isEqualTo(48)
     }
 
     @Test

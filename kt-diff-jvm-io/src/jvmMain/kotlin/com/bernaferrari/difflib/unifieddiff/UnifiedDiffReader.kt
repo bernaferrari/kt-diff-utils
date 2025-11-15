@@ -206,7 +206,7 @@ class UnifiedDiffReader private constructor(reader: Reader) {
         return false
     }
 
-    private fun processDiff(match: MatchResult, line: String) {
+    private fun processDiff(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         LOG.log(Level.FINE, "start {0}", line)
         val fromTo = parseFileNames(READABLE.lastLine() ?: line)
         val file = createNewFile()
@@ -216,7 +216,7 @@ class UnifiedDiffReader private constructor(reader: Reader) {
         actualFileCreatedFromDiff = true
     }
 
-    private fun processSimilarityIndex(match: MatchResult, line: String) {
+    private fun processSimilarityIndex(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.similarityIndex = match.group(1)?.toInt()
     }
 
@@ -240,7 +240,7 @@ class UnifiedDiffReader private constructor(reader: Reader) {
         }
     }
 
-    private fun processNormalLine(match: MatchResult, line: String) {
+    private fun processNormalLine(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         val content = line.substring(1)
         originalTxt.add(content)
         revisedTxt.add(content)
@@ -248,21 +248,21 @@ class UnifiedDiffReader private constructor(reader: Reader) {
         addLineIdx++
     }
 
-    private fun processAddLine(match: MatchResult, line: String) {
+    private fun processAddLine(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         val content = line.substring(1)
         revisedTxt.add(content)
         addLineIdx++
         addLineIdxList.add(newLn - 1 + addLineIdx)
     }
 
-    private fun processDelLine(match: MatchResult, line: String) {
+    private fun processDelLine(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         val content = line.substring(1)
         originalTxt.add(content)
         delLineIdx++
         delLineIdxList.add(oldLn - 1 + delLineIdx)
     }
 
-    private fun processChunk(match: MatchResult, chunkStart: String) {
+    private fun processChunk(match: MatchResult, @Suppress("UNUSED_PARAMETER") chunkStart: String) {
         if (actualFile == null) {
             createNewFile()
         }
@@ -278,11 +278,11 @@ class UnifiedDiffReader private constructor(reader: Reader) {
         }
     }
 
-    private fun processIndex(match: MatchResult, line: String) {
+    private fun processIndex(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         actualFile?.index = line.substring(6)
     }
 
-    private fun processFromFile(match: MatchResult, line: String) {
+    private fun processFromFile(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         val file = if (actualFileCreatedFromDiff && actualFile != null) {
             actualFile!!
         } else {
@@ -293,53 +293,53 @@ class UnifiedDiffReader private constructor(reader: Reader) {
         file.fromTimestamp = extractTimestamp(line)
     }
 
-    private fun processToFile(match: MatchResult, line: String) {
+    private fun processToFile(@Suppress("UNUSED_PARAMETER") match: MatchResult, line: String) {
         val file = actualFile ?: createNewFile()
         file.toFile = extractFileName(line)
         file.toTimestamp = extractTimestamp(line)
     }
 
-    private fun processRenameFrom(match: MatchResult, line: String) {
+    private fun processRenameFrom(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.renameFrom = match.group(1)
     }
 
-    private fun processRenameTo(match: MatchResult, line: String) {
+    private fun processRenameTo(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.renameTo = match.group(1)
     }
 
-    private fun processCopyFrom(match: MatchResult, line: String) {
+    private fun processCopyFrom(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.copyFrom = match.group(1)
     }
 
-    private fun processCopyTo(match: MatchResult, line: String) {
+    private fun processCopyTo(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.copyTo = match.group(1)
     }
 
-    private fun processNewFileMode(match: MatchResult, line: String) {
+    private fun processNewFileMode(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.newFileMode = match.group(1)
     }
 
-    private fun processDeletedFileMode(match: MatchResult, line: String) {
+    private fun processDeletedFileMode(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.deletedFileMode = match.group(1)
     }
 
-    private fun processOldMode(match: MatchResult, line: String) {
+    private fun processOldMode(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.oldMode = match.group(1)
     }
 
-    private fun processNewMode(match: MatchResult, line: String) {
+    private fun processNewMode(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.newMode = match.group(1)
     }
 
-    private fun processBinaryAdded(match: MatchResult, line: String) {
+    private fun processBinaryAdded(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.binaryAdded = match.group(1)
     }
 
-    private fun processBinaryDeleted(match: MatchResult, line: String) {
+    private fun processBinaryDeleted(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.binaryDeleted = match.group(1)
     }
 
-    private fun processBinaryEdited(match: MatchResult, line: String) {
+    private fun processBinaryEdited(match: MatchResult, @Suppress("UNUSED_PARAMETER") line: String) {
         actualFile?.binaryEdited = match.group(1)
     }
 

@@ -10,7 +10,7 @@ Lightweight Kotlin diff utilities optimized for Android and Kotlin Multiplatform
   - `kt-diff-core`: Myers diff, patch apply/restore, diff-row generation – 100% Kotlin.
   - `kt-diff-jvm-io`: optional unified diff parser/writer plus legacy Java serialization helpers.
   - `kt-diff-jgit`: histogram diff adapter backed by Eclipse JGit.
-- **Benchmarked**: run `./gradlew :kt-diff-core:jmh` to reproduce the numbers below (see `kt-diff-core/src/jmh/...` for workloads).
+- **Benchmarked**: run `./gradlew :kt-diff-bench:jmh` to reproduce the numbers below (see `kt-diff-bench/src/jmh/...` for workloads).
 
 | Scenario (JDK 22) | java-diff-utils | KT Diff Utils | Notes |
 | --- | --- | --- | --- |
@@ -32,9 +32,9 @@ We cloned [petertrr/kotlin-multiplatform-diff](https://github.com/petertrr/kotli
 | `applyPreparedPatch`, 2 000 lines, 10 % edits | **0.046 ms/op** | 0.056 ms/op | Similar patch-apply performance |
 | `repeatedDeltaAccess`, 2 000 lines, 10 % edits | **≈0.001 ms/op** | 1.209 ms/op | Cached ordering vs repeated sorts |
 
-Smaller workloads (500 lines / 3 % edits) show similar results within noise; KT Diff Utils pulls ahead as inputs get larger or more chaotic. To reproduce, temporarily add the competitor’s `src/commonMain/kotlin` directory to our JMH source set and run `./gradlew :kt-diff-core:jmh`.
+Smaller workloads (500 lines / 3 % edits) show similar results within noise; KT Diff Utils pulls ahead as inputs get larger or more chaotic. To reproduce, temporarily add the competitor’s `src/commonMain/kotlin` directory to the `kt-diff-bench` JMH source set and run `./gradlew :kt-diff-bench:jmh`.
 
-Benchmark reports land in `kt-diff-core/build/results/jmh/results.txt`. Adjust workloads via `kt-diff-core/src/jmh/kotlin/com/bernaferrari/difflib/benchmark/DiffBenchmark.kt`.
+Benchmark reports land in `kt-diff-bench/build/results/jmh/results.txt`. Adjust workloads via `kt-diff-bench/src/jmh/kotlin/com/bernaferrari/difflib/benchmark/DiffBenchmark.kt`.
 
 ## Related Kotlin ports
 

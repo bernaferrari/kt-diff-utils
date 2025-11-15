@@ -111,7 +111,7 @@ class MyersDiff<T> @JvmOverloads constructor(
         throw IllegalStateException("could not find a diff path")
     }
 
-    private fun buildRevision(actualPath: PathNode, orig: List<T>, rev: List<T>): List<Change> {
+    private fun buildRevision(actualPath: PathNode): List<Change> {
         var path: PathNode? = actualPath
         val changes = mutableListOf<Change>()
         if (path?.isSnake() == true) {
@@ -157,7 +157,7 @@ class MyersDiff<T> @JvmOverloads constructor(
             return listOf(Change(DeltaType.DELETE, 0, source.size, 0, 0))
         }
         val path = buildPath(source, target, progress)
-        return buildRevision(path, source, target)
+        return buildRevision(path)
     }
 
     private data class TrimmedLists<T>(
@@ -333,8 +333,7 @@ class MyersDiff<T> @JvmOverloads constructor(
             override fun <T> create(equalizer: Equalizer<T>): DiffAlgorithmI<T> = MyersDiff(equalizer)
         }
 
-        @Suppress("UNCHECKED_CAST")
         private fun <T> defaultEqualizer(): Equalizer<T> =
-            DEFAULT_EQUALIZER as Equalizer<T>
+            DEFAULT_EQUALIZER
     }
 }

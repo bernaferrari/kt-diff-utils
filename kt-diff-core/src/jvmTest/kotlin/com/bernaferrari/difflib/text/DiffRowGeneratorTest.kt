@@ -257,7 +257,7 @@ class DiffRowGeneratorTest {
         val deltas = DiffUtils.diff(listOf("a", "b", "c"), listOf("a", "c")).deltas
         val merged = DeltaMergeUtils.mergeInlineDeltas(
             InlineDeltaMergeInfo(deltas, listOf("a", "b", "c"), listOf("a", "c"))
-        ) { equalities -> equalities.all { it?.trim().isNullOrEmpty() } }
+        ) { equalities -> equalities.all { it.isBlank() } }
         assertEquals(1, merged.size)
     }
 
